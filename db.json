@@ -1,0 +1,22 @@
+{
+  "users": [
+    { "id": 1, "username": "admin", "password": "admin123", "role": "admin", "nama": "Vanessa" },
+    { "id": 2, "username": "peserta1", "password": "peserta123", "role": "peserta", "nama": "Ali Pratama" }
+  ],
+  "jadwal": [
+    { "id": 1, "hari": "Senin", "jam": "18:00", "materi": "Dasar Teknik" },
+    { "id": 2, "hari": "Rabu", "jam": "19:00", "materi": "Sparing Latihan" }
+  ],
+  "absensi": [
+    { "id": 1, "userId": 2, "tanggal": "2025-07-09", "status": "Hadir" }
+  ],
+  "events": [
+    { "id": 1, "nama": "Kejuaraan Daerah", "tanggal": "2025-08-15", "lokasi": "Gor Pekanbaru" }
+  ],
+  "iuran": [
+    { "id": 1, "nama": "Ali Pratama", "jumlah": 50000, "bulan": "Juli" }
+  ],
+  "pengeluaran": [
+    { "id": 1, "keterangan": "Sewa Gedung", "jumlah": 200000, "tanggal": "2025-07-05" }
+  ]
+}
