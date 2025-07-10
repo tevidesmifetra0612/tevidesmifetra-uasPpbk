@@ -7,7 +7,7 @@ import PesertaLayout from '@/layouts/PesertaLayout.vue'
 
 // Pages
 import Login from '@/auth/Login.vue'
-import Unauthorized from '@/layouts/Unauthorized.vue'
+import unauthorized from '@/layouts/unauthorized.vue'
 import AdminDashboard from '@/dashboard/AdminDashboard.vue'
 import PesertaDashboard from '@/dashboard/PesertaDashboard.vue'
 import LihatJadwal from '@/jadwal/LihatJadwal.vue'
@@ -22,7 +22,7 @@ import Profil from '@/user/Profil.vue'
 
 const routes = [
   { path: '/login', component: Login },
-  { path: '/unauthorized', component: Unauthorized },
+  { path: '/unauthorized', component: unauthorized },
 
   // Admin layout with children
   {
