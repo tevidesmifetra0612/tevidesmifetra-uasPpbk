@@ -12,8 +12,8 @@ export const useUserStore = defineStore('user', {
     // Mengecek apakah user login sebagai peserta
     isPeserta: (state) => state.user?.role === 'peserta',
 
-    // Mengecek apakah user sedang login
-    isLoggedIn: (state) => !!state.user
+    // Mengecek apakah user sedang login secara valid
+    isLoggedIn: (state) => !!state.user && !!state.user.role
   },
 
   actions: {
@@ -33,7 +33,19 @@ export const useUserStore = defineStore('user', {
     loadUser() {
       const stored = localStorage.getItem('user')
       if (stored) {
-        this.user = JSON.parse(stored)
+        try {
+          const parsed = JSON.parse(stored)
+          // Validasi: hanya simpan jika ada role
+          if (parsed && parsed.role) {
+            this.user = parsed
+          } else {
+            this.user = null
+          }
+        } catch (error) {
+          this.user = null
+        }
+      } else {
+        this.user = null
       }
     }
   }

@@ -17,6 +17,15 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 function goHome() {
-  router.push('/')
+  const user = JSON.parse(localStorage.getItem('user'))
+
+  if (user?.role === 'admin') {
+    router.push('/admin')
+  } else if (user?.role === 'peserta') {
+    router.push('/peserta')
+  } else {
+    router.push('/login')
+  }
 }
+
 </script>

@@ -7,7 +7,7 @@ import PesertaLayout from '@/layouts/PesertaLayout.vue'
 
 // Pages
 import Login from '@/auth/Login.vue'
-import unauthorized from '@/layouts/unauthorized.vue'
+import Unauthorized from '@/layouts/unauthorized.vue'
 import AdminDashboard from '@/dashboard/AdminDashboard.vue'
 import PesertaDashboard from '@/dashboard/PesertaDashboard.vue'
 import LihatJadwal from '@/jadwal/LihatJadwal.vue'
@@ -22,7 +22,7 @@ import Profil from '@/user/Profil.vue'
 
 const routes = [
   { path: '/login', component: Login },
-  { path: '/unauthorized', component: unauthorized },
+  { path: '/unauthorized', component: Unauthorized },
 
   // Admin layout with children
   {
@@ -56,7 +56,7 @@ const routes = [
     ]
   },
 
-  // ✅ Route root: arahkan sesuai role
+  // Route root: arahkan berdasarkan role
   {
     path: '/',
     beforeEnter: (to, from, next) => {
@@ -70,11 +70,11 @@ const routes = [
         return next('/peserta')
       }
 
-      return next('/login') // default jika belum login atau role tidak dikenal
+      return next('/login')
     }
   },
 
-  // ✅ Catch-all route: arahkan ke unauthorized
+  // Catch-all route
   {
     path: '/:pathMatch(.*)*',
     redirect: '/unauthorized'
@@ -86,21 +86,40 @@ const router = createRouter({
   routes
 })
 
-// ✅ Navigation guard untuk cek login dan role
+// ✅ Route Guard Lengkap
 router.beforeEach((to, from, next) => {
   const userStore = useUserStore()
+
+  // Pastikan user dimuat dari localStorage
   if (!userStore.user) {
     userStore.loadUser()
   }
 
-  if (to.meta.requiresAuth && !userStore.isLoggedIn) {
+  const isLoggedIn = userStore.isLoggedIn
+  const requiredRole = to.meta.role
+  const requiresAuth = to.meta.requiresAuth
+
+  console.log('[guard] Checking route:', to.fullPath)
+  console.log('[guard] isLoggedIn:', isLoggedIn)
+  console.log('[guard] requiredRole:', requiredRole)
+  console.log('[guard] user:', userStore.user)
+
+  // 1. Belum login, tapi route butuh login → redirect ke login
+  if (requiresAuth && !isLoggedIn) {
+    console.log('[guard] Belum login → redirect ke /login')
     return next('/login')
   }
 
-  if (to.meta.role && userStore.user?.role !== to.meta.role) {
-    return next('/unauthorized')
+  // 2. Sudah login, tapi role tidak cocok → redirect ke unauthorized
+  if (requiresAuth && requiredRole && isLoggedIn) {
+    const userRole = userStore.user?.role
+    if (userRole !== requiredRole) {
+      console.log('[guard] Role tidak cocok → redirect ke /unauthorized')
+      return next('/unauthorized')
+    }
   }
 
+  // 3. Lolos semua pengecekan → lanjut
   next()
 })
 
