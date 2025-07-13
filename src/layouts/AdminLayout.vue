@@ -1,4 +1,3 @@
-<!-- src/layouts/AdminLayout.vue -->
 <template>
   <q-layout view="hHh lpR fFf">
     <!-- Navbar / Header -->
@@ -67,7 +66,7 @@
 
     <!-- Isi Halaman -->
     <q-page-container>
-      <router-view /> <!-- Semua halaman anak admin ditampilkan di sini -->
+      <router-view />
     </q-page-container>
   </q-layout>
 </template>
@@ -75,12 +74,22 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useQuasar } from 'quasar'
 
 const drawer = ref(true)
 const router = useRouter()
+const $q = useQuasar()
 
 const logout = () => {
-  localStorage.removeItem('userId')
-  router.push('/login')
+  $q.dialog({
+    title: 'Konfirmasi Logout',
+    message: 'Apakah Anda yakin ingin logout?',
+    cancel: true,
+    persistent: true
+  }).onOk(() => {
+    // Hapus data login dan redirect
+    localStorage.removeItem('userId')
+    router.push('/login')
+  })
 }
 </script>

@@ -63,7 +63,7 @@ async function login() {
   errorMessage.value = ''
 
   try {
-    const res = await axios.get(`http://localhost:3000/users?username=${username.value}&password=${password.value}`)
+    const res = await axios.get(`http://localhost:3001/users?username=${username.value}&password=${password.value}`)
 
     if (res.data.length === 1) {
       const user = res.data[0]

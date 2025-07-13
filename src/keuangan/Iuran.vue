@@ -32,7 +32,7 @@ const iuran = ref([])
 
 onMounted(async () => {
   try {
-    const res = await axios.get('http://localhost:3000/iuran')
+    const res = await axios.get('http://localhost:3001/iuran')
     iuran.value = res.data
   } catch (err) {
     console.error('Gagal memuat data iuran:', err)

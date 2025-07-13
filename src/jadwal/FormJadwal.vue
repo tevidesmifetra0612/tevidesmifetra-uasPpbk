@@ -2,7 +2,9 @@
   <q-page padding>
     <q-card class="q-pa-md shadow-2" style="max-width: 500px; margin: auto;">
       <q-card-section>
-        <div class="text-h6">Tambah Jadwal Latihan</div>
+        <div class="text-h6">
+          {{ isEdit ? 'Edit Jadwal Latihan' : 'Tambah Jadwal Latihan' }}
+        </div>
       </q-card-section>
 
       <q-separator />
@@ -22,6 +24,13 @@
           prepend-icon="access_time"
           class="q-mb-md"
         />
+        <q-input
+          filled
+          v-model="materi"
+          label="Materi Latihan"
+          prepend-icon="description"
+          class="q-mb-md"
+        />
 
         <q-btn
           label="Simpan"
@@ -36,34 +45,60 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useQuasar } from 'quasar'
+import { useRouter, useRoute } from 'vue-router'
 
 const hari = ref('')
 const jam = ref('')
+const materi = ref('')
+const router = useRouter()
+const route = useRoute()
 const $q = useQuasar()
+const isEdit = ref(false)
+
+onMounted(async () => {
+  const id = route.query.id
+  if (id) {
+    isEdit.value = true
+    try {
+      const res = await axios.get(`http://localhost:3001/jadwal/${id}`)
+      hari.value = res.data.hari
+      jam.value = res.data.jam
+      materi.value = res.data.materi
+    } catch (err) {
+      $q.notify({ type: 'negative', message: 'Gagal mengambil data jadwal' })
+    }
+  }
+})
 
 async function simpan() {
-  if (!hari.value || !jam.value) {
-    $q.notify({
-      type: 'negative',
-      message: 'Hari dan jam harus diisi!'
-    })
+  if (!hari.value || !jam.value || !materi.value) {
+    $q.notify({ type: 'negative', message: 'Semua field wajib diisi!' })
     return
   }
 
-  await axios.post('http://localhost:3000/jadwal', {
-    hari: hari.value,
-    jam: jam.value
-  })
-
-  $q.notify({
-    type: 'positive',
-    message: 'Jadwal berhasil ditambahkan!'
-  })
-
-  hari.value = ''
-  jam.value = ''
+  const id = route.query.id
+  try {
+    if (isEdit.value) {
+      await axios.put(`http://localhost:3001/jadwal/${id}`, {
+        hari: hari.value,
+        jam: jam.value,
+        materi: materi.value
+      })
+      $q.notify({ type: 'positive', message: 'Jadwal berhasil diperbarui!' })
+    } else {
+      await axios.post('http://localhost:3001/jadwal', {
+        hari: hari.value,
+        jam: jam.value,
+        materi: materi.value
+      })
+      $q.notify({ type: 'positive', message: 'Jadwal berhasil ditambahkan!' })
+    }
+    router.push('/admin/jadwal')
+  } catch (err) {
+    $q.notify({ type: 'negative', message: 'Gagal menyimpan jadwal!' })
+  }
 }
 </script>

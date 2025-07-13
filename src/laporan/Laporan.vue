@@ -59,8 +59,8 @@ const columnsPengeluaran = [
 
 onMounted(async () => {
   try {
-    const resIuran = await axios.get('http://localhost:3000/iuran')
-    const resPengeluaran = await axios.get('http://localhost:3000/pengeluaran')
+    const resIuran = await axios.get('http://localhost:3001/iuran')
+    const resPengeluaran = await axios.get('http://localhost:3001/pengeluaran')
     iuran.value = resIuran.data
     pengeluaran.value = resPengeluaran.data
   } catch (err) {

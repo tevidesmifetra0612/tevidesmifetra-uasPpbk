@@ -1,4 +1,3 @@
-<!-- src/layouts/PesertaLayout.vue -->
 <template>
   <q-layout view="hHh lpR fFf">
     <!-- Header -->
@@ -60,12 +59,21 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useQuasar } from 'quasar'
 
 const drawer = ref(true)
 const router = useRouter()
+const $q = useQuasar()
 
 const logout = () => {
-  localStorage.removeItem('userId')
-  router.push('/login')
+  $q.dialog({
+    title: 'Konfirmasi Logout',
+    message: 'Apakah Anda yakin ingin keluar?',
+    cancel: true,
+    persistent: true
+  }).onOk(() => {
+    localStorage.removeItem('userId')
+    router.push('/login')
+  })
 }
 </script>
